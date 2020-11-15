@@ -57,3 +57,11 @@ class Quadrant:
         if y > self.rows or x > self.columns:
             valid = False
         return valid
+
+    def available_coordinates(self):
+        available_coordinates = []
+        for row in range(len(self.board)):
+            for column in range(len(self.board[row])):
+                if self.is_empty(row, column):
+                    available_coordinates.append([row, column])
+        return available_coordinates

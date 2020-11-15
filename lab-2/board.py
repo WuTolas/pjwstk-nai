@@ -31,3 +31,13 @@ class Board:
 
     def is_valid_quadrant(self, quadrant):
         return 0 <= quadrant < self.quadrants
+
+    def available_moves(self):
+        available_moves = []
+        for i in range(len(self.play_area)):
+            available_coordinates = self.play_area[i].available_coordinates()
+            for j in range(len(available_coordinates)):
+                for k in range(len(self.play_area)):
+                    y, x = available_coordinates[j]
+                    available_moves.append([i, y, x, k, 0])
+                    available_moves.append([i, y, x, k, 1])
