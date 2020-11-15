@@ -32,6 +32,15 @@ class Board:
     def is_valid_quadrant(self, quadrant):
         return 0 <= quadrant < self.quadrants
 
+    def player_choices(self, symbol):
+        current_choices = []
+        for quadrant in range(self.quadrants):
+            for row in range(self.play_area[quadrant].get_rows()):
+                for column in range(self.play_area[quadrant].get_columns()):
+                    if self.play_area[quadrant].get_board()[row][column] == symbol:
+                        current_choices.append((quadrant, row, column))
+        return current_choices
+
     def available_moves(self):
         available_moves = []
         for i in range(len(self.play_area)):
@@ -41,3 +50,4 @@ class Board:
                     y, x = available_coordinates[j]
                     available_moves.append([i, y, x, k, 0])
                     available_moves.append([i, y, x, k, 1])
+        return available_moves

@@ -65,3 +65,12 @@ class Quadrant:
                 if self.is_empty(row, column):
                     available_coordinates.append([row, column])
         return available_coordinates
+
+    def get_board(self):
+        return self.board
+
+    def get_columns(self):
+        return self.columns
+
+    def get_rows(self):
+        return self.rows
