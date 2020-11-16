@@ -37,7 +37,7 @@ class Quadrant:
 
     def place_choice(self, choice, y, x):
         result = False
-        if self.is_valid_coordinate(y, x) and self.is_empty(y, x):
+        if self.is_valid_coordinate(y, x):
             self.board[y][x] = choice
             result = True
         return result
@@ -65,6 +65,10 @@ class Quadrant:
                 if self.is_empty(row, column):
                     available_coordinates.append([row, column])
         return available_coordinates
+
+    def middle_occupied_by(self, symbol):
+        if self.board[1][1] == symbol:
+            return True
 
     def get_board(self):
         return self.board

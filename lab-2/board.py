@@ -41,6 +41,13 @@ class Board:
                         current_choices.append((quadrant, row, column))
         return current_choices
 
+    def count_occupied_middles_by_symbol(self, symbol):
+        count = 0
+        for i in range(self.quadrants):
+            if self.play_area[i].middle_occupied_by(symbol):
+                count = count + 1
+        return count
+
     def available_moves(self):
         available_moves = []
         for i in range(len(self.play_area)):

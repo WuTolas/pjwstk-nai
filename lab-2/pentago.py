@@ -9,24 +9,29 @@ class Pentago(TwoPlayersGame):
         self.board = Board()
         self.players = players
         self.nplayer = 1
+        self.end_before_rotate = False
 
     def make_move(self, move):
-        quadrant_before, x, y, quadrant_after, rotate = move
+        quadrant_before, y, x, quadrant_after, rotate = move
         player_symbol = self.get_player_symbol(self.nplayer)
         self.board.place_choice(player_symbol, quadrant_before, y, x)
         if self.check_win == True:
+            self.end_before_rotate = True
             return
         self.board.rotate_quadrant(quadrant_after, rotate)
 
-    # def unmake_move(self, move):
-    #     quadrant_before, x, y, quadrant_after, rotate = move
-    #     player_symbol = Choice.EMPTY
-    #     if rotate == 0:
-    #         rotate = 1
-    #     else:
-    #         rotate = 0
-    #     self.board.rotate_quadrant(quadrant_after, rotate)
-    #     self.board.place_choice(player_symbol, quadrant_before, y, x)
+    def unmake_move(self, move):
+        quadrant_before, y, x, quadrant_after, rotate = move
+        player_symbol = Choice.EMPTY
+        if rotate == 0:
+            rotate = 1
+        else:
+            rotate = 0
+        if self.end_before_rotate == False:
+            self.board.rotate_quadrant(quadrant_after, rotate)
+        else:
+            self.end_before_rotate = False
+        self.board.place_choice(player_symbol, quadrant_before, y, x)
 
     def check_win(self):
         did_i_win = False
@@ -38,6 +43,16 @@ class Pentago(TwoPlayersGame):
                 break
         return did_i_win
 
+    def check_lose(self):
+        did_i_lose = False
+        player_symbol = self.get_player_symbol(self.nopponent)
+        player_choices = self.board.player_choices(player_symbol)
+        for winning_combination in self.win_combinations():
+            if set(winning_combination).issubset(set(player_choices)):
+                did_i_lose = True
+                break
+        return did_i_lose
+
     def possible_moves(self):
         return self.board.available_moves()
 
@@ -45,10 +60,25 @@ class Pentago(TwoPlayersGame):
         self.board.print_board()
 
     def is_over(self):
-        return (self.possible_moves() == []) or self.check_win()
+        return (self.possible_moves() == []) or self.end_before_rotate == True or self.check_lose()
 
     def scoring(self):
-        return 100 if self.check_win() else 0
+        score = 0
+        score = score + self.board.count_occupied_middles_by_symbol(Choice.CIRCLE) * (30)
+        score = score + self.board.count_occupied_middles_by_symbol(Choice.EMPTY) * (-10)
+        score = score + self.board.count_occupied_middles_by_symbol(Choice.CROSS) * (-30)
+
+        if self.end_before_rotate:
+            score = -100
+            return score
+        if self.check_lose():
+            score = -200
+            return score
+        if self.check_win():
+            score = 180
+            return score
+        print(score)
+        return score
 
     @staticmethod
     def win_combinations():
@@ -100,6 +130,6 @@ class Pentago(TwoPlayersGame):
 
 
 
-algo = Negamax(2, win_score=80)
+algo = Negamax(2, win_score=150)
 game = Pentago([Human_Player(), AI_Player(algo)])
 game.play()
