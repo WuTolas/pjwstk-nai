@@ -5,22 +5,21 @@ from direction import Direction
 class Board:
 
     def __init__(self):
-        self.quadrants = 4
-        self.play_area = [Quadrant() for _ in range(self.quadrants)]
+        self.quadrants_count = 4
+        self.play_area = [Quadrant() for _ in range(self.quadrants_count)]
 
     def print_board(self):
-        for i in range(0, len(self.play_area), 2):
-            for j in range(len(self.play_area[i].board)):
-                line = self.play_area[i].get_line(j) + " | " + self.play_area[i+1].get_line(j)
+        for i in range(0, self.quadrants_count, 2):
+            for row in range(3):
+                line = self.play_area[i].get_line(row) + " | " + self.play_area[i+1].get_line(row)
                 print(line)
-            if i < len(self.play_area) - 2:
-                print("---------------")
-        print()
+            if i < self.quadrants_count - 2:
+                print("----------------")
 
-    def place_choice(self, choice, quadrant, y, x):
-        if not self.is_valid_quadrant(quadrant):
-            return False
-        return self.play_area[quadrant].place_choice(choice, y, x)
+    def place_player(self, player, position):
+        quadrant = position // 9
+        quadrant_position = position % 9
+        return self.play_area[quadrant].place_player(player, quadrant_position)
     
     def rotate_quadrant(self, quadrant, direction):
         if direction == 0:
@@ -29,32 +28,24 @@ class Board:
             direction = Direction.CLOCKWISE
         self.play_area[quadrant].rotate(direction)
 
-    def is_valid_quadrant(self, quadrant):
-        return 0 <= quadrant < self.quadrants
-
-    def player_choices(self, symbol):
-        current_choices = []
-        for quadrant in range(self.quadrants):
-            for row in range(self.play_area[quadrant].get_rows()):
-                for column in range(self.play_area[quadrant].get_columns()):
-                    if self.play_area[quadrant].get_board()[row][column] == symbol:
-                        current_choices.append((quadrant, row, column))
-        return current_choices
-
-    def count_occupied_middles_by_symbol(self, symbol):
-        count = 0
-        for i in range(self.quadrants):
-            if self.play_area[i].middle_occupied_by(symbol):
-                count = count + 1
-        return count
+    def player_choices(self, player):
+        player_choices = []
+        for i in range(self.quadrants_count):
+            quadrant_board = self.play_area[i].get_board()
+            positions_count = self.play_area[i].get_positions_count()
+            for j in range(positions_count):
+                if quadrant_board[j] == player:
+                    position = j + 1 + i * 9
+                    player_choices.append(position)
+        return player_choices
 
     def available_moves(self):
         available_moves = []
-        for i in range(len(self.play_area)):
-            available_coordinates = self.play_area[i].available_coordinates()
-            for j in range(len(available_coordinates)):
-                for k in range(len(self.play_area)):
-                    y, x = available_coordinates[j]
-                    available_moves.append([i, y, x, k, 0])
-                    available_moves.append([i, y, x, k, 1])
+        for i in range(self.quadrants_count):
+            quadrant_positions = self.play_area[i].available_positions()
+            for p in quadrant_positions:
+                position = p + i * 9
+                for j in range(self.quadrants_count):
+                    available_moves.append([position, j + 1, 1])
+                    available_moves.append([position, j + 1, 2])
         return available_moves
