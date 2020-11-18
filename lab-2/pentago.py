@@ -1,5 +1,5 @@
 from board import Board
-from easyAI import TwoPlayersGame, Negamax, Human_Player, AI_Player
+from easyAI import TwoPlayersGame, Negamax, Human_Player, AI_Player, TT, NonRecursiveNegamax, SSS, DUAL
 
 
 class Pentago(TwoPlayersGame):
@@ -30,6 +30,10 @@ class Pentago(TwoPlayersGame):
         else:
             self.end_before_rotate = False
         self.board.place_player(0, position - 1)
+
+    def ttentry(self):
+        flattened_list = [value for obj in self.board.get_play_area() for value in obj.get_board()]
+        return "".join([".ox"[i] for i in flattened_list])
 
     def check_win(self):
         return self.winning_combination_exists(self.board.player_choices(self.nplayer))
@@ -99,6 +103,6 @@ class Pentago(TwoPlayersGame):
                 [26, 24, 28, 17, 15]]
 
 
-algo = Negamax(2)
+algo = DUAL(4, tt = TT())
 game = Pentago([Human_Player(), AI_Player(algo)])
 game.play()

@@ -49,3 +49,6 @@ class Board:
                     available_moves.append([position, j + 1, 1])
                     available_moves.append([position, j + 1, 2])
         return available_moves
+
+    def get_play_area(self):
+        return self.play_area
