@@ -4,8 +4,8 @@ from copy import deepcopy
 
 class Quadrant:
 
-    def __init__(self):
-        self.positions_count = 9
+    def __init__(self, positions):
+        self.positions_count = positions
         self.board = [0 for _ in range(self.positions_count)]
 
     def rotate(self, direction):

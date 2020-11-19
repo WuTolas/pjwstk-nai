@@ -6,7 +6,8 @@ class Board:
 
     def __init__(self):
         self.quadrants_count = 4
-        self.play_area = [Quadrant() for _ in range(self.quadrants_count)]
+        self.quadrant_positions_count = 9
+        self.play_area = [Quadrant(self.quadrant_positions_count) for _ in range(self.quadrants_count)]
 
     def print_board(self):
         for i in range(0, self.quadrants_count, 2):
@@ -22,10 +23,7 @@ class Board:
         return self.play_area[quadrant].place_player(player, quadrant_position)
     
     def rotate_quadrant(self, quadrant, direction):
-        if direction == 0:
-            direction = Direction.ANTICLOCKWISE
-        else:
-            direction = Direction.CLOCKWISE
+        direction = Direction(direction)
         self.play_area[quadrant].rotate(direction)
 
     def player_choices(self, player):
@@ -46,8 +44,10 @@ class Board:
             for p in quadrant_positions:
                 position = p + i * 9
                 for j in range(self.quadrants_count):
-                    available_moves.append([position, j + 1, 1])
-                    available_moves.append([position, j + 1, 2])
+                    move1 = [str(position), str(j + 1), "l"]
+                    move2 = [str(position), str(j + 1), "r"]
+                    available_moves.append(" ".join(move1))
+                    available_moves.append(" ".join(move2))
         return available_moves
 
     def get_play_area(self):

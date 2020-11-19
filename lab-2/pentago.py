@@ -1,5 +1,5 @@
 from board import Board
-from easyAI import TwoPlayersGame, Negamax, Human_Player, AI_Player, TT, NonRecursiveNegamax, SSS, DUAL
+from easyAI import TwoPlayersGame, Negamax, Human_Player, AI_Player, TT
 
 
 class Pentago(TwoPlayersGame):
@@ -8,32 +8,31 @@ class Pentago(TwoPlayersGame):
         self.board = Board()
         self.players = players
         self.nplayer = 1
+        self.has_lost = None
         self.end_before_rotate = False
-        self.has_lost = False
 
     def make_move(self, move):
-        position, quadrant, rotate = move
-        self.board.place_player(self.nplayer, position - 1)
+        position, quadrant, rotate = move.split(" ")
+        self.board.place_player(self.nplayer, int(position) - 1)
         if self.check_win():
             self.end_before_rotate = True
-            return
-        self.board.rotate_quadrant(quadrant - 1, rotate - 1)
+        else:
+            self.board.rotate_quadrant(int(quadrant) - 1, rotate)
 
     def unmake_move(self, move):
-        position, quadrant, rotate = move
+        position, quadrant, rotate = move.split(" ")
         if not self.end_before_rotate:
-            if rotate == 2:
-                rotate = 1
+            if rotate == "l":
+                rotate = "r"
             else:
-                rotate = 2
-            self.board.rotate_quadrant(quadrant - 1, rotate - 1)
+                rotate = "l"
+            self.board.rotate_quadrant(int(quadrant) - 1, rotate)
         else:
             self.end_before_rotate = False
-        self.board.place_player(0, position - 1)
+        self.board.place_player(0, int(position) - 1)
 
     def ttentry(self):
-        flattened_list = [value for obj in self.board.get_play_area() for value in obj.get_board()]
-        return "".join([".ox"[i] for i in flattened_list])
+        return tuple(value for obj in self.board.get_play_area() for value in obj.get_board())
 
     def check_win(self):
         return self.winning_combination_exists(self.board.player_choices(self.nplayer))
@@ -54,15 +53,16 @@ class Pentago(TwoPlayersGame):
         return self.board.available_moves()
 
     def show(self):
+        self.show_hint_table()
         self.board.print_board()
 
     def is_over(self):
-        return (self.possible_moves() == []) or self.check_lose()
+        return self.check_lose() or (self.possible_moves() == [])
 
     def scoring(self):
-        if self.has_lost:
+        if self.has_lost is not None:
             has_lost = self.has_lost
-            self.has_lost = False
+            self.has_lost = None
             return -100 if has_lost else 0
         else:
             return -100 if self.check_lose() else 0
@@ -102,7 +102,24 @@ class Pentago(TwoPlayersGame):
                 [23, 21, 16, 14, 12],
                 [26, 24, 28, 17, 15]]
 
+    @staticmethod
+    def show_hint_table():
+        print("Positions hint:")
+        print()
+        print(" 1  2  3 | 10 11 12")
+        print(" 4  5  6 | 13 14 15")
+        print(" 7  8  9 | 16 17 18")
+        print("--------------------")
+        print("19 20 21 | 28 29 30")
+        print("22 23 24 | 31 32 33")
+        print("25 26 27 | 34 35 36")
+        print()
+        print("Example move: 14 1 r")
+        print("Places player on 14th position, and rotates 1st quadrant to the right")
+        print()
 
-algo = DUAL(4, tt = TT())
+
+algo = Negamax(3, tt=TT())
 game = Pentago([Human_Player(), AI_Player(algo)])
 game.play()
+print("Player %d loses" % game.nplayer)
