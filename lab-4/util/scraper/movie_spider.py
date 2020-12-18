@@ -37,7 +37,7 @@ class MovieSpider(scrapy.Spider):
     """
     name = 'moviespider'
     custom_settings = {
-        'DOWNLOAD_DELAY': 0.1,
+        'DOWNLOAD_DELAY': 0.02,
         'COOKIES_ENABLED': False
     }
 
