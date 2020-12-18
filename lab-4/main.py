@@ -23,19 +23,24 @@ def main():
     full_name = str(input("Type full name of the person you want to see movie recommendations: "))
     recommendations = movie_service.recommend_movies(full_name)
 
-    print(full_name)
-    print("*************************************************** YOU SHOULD CHECK THESE MOVIES: ***************************************************")
-    for m in recommendations.must_watch_movies:
-        print("-------------------------------------------------")
-        print_movie(m)
-        print("-------------------------------------------------")
+    if len(recommendations.must_watch_movies) == 0 and len(recommendations.avoid_movies) == 0:
+        print("Looks like there is not enough data about this person to show you recommendations :(") 
+    else:
+        print("**************************************************************************************************************************************")
+        print("*************************************************** YOU SHOULD CHECK THESE MOVIES: ***************************************************")
+        print("**************************************************************************************************************************************")
+        for m in recommendations.must_watch_movies:
+            print("-------------------------------------------------")
+            print_movie(m)
+            print("-------------------------------------------------")
 
-    print("*************************************************** AND BETTER AVOID THESE MOVIES: ***************************************************")
-    for m in recommendations.avoid_movies:
-        print("-------------------------------------------------")
-        print_movie(m)
-        print("-------------------------------------------------")
-
+        print("**************************************************************************************************************************************")
+        print("*************************************************** AND BETTER AVOID THESE MOVIES: ***************************************************")
+        print("**************************************************************************************************************************************")
+        for m in recommendations.avoid_movies:
+            print("-------------------------------------------------")
+            print_movie(m)
+            print("-------------------------------------------------")
 
 def print_movie(movie_info):
     """
