@@ -9,7 +9,7 @@ https://youtu.be/q1CO351x1e4
 ## Environment setup - linux
 
 1. Make sure that you have **python3**, **python3-pip** and **python3-venv** installed
-2. Download project, extract it and go to the **lab-4** folder
+2. Download project, extract it and go to the **lab-5** folder
 3. Create virtual environment: `python3 -m venv env`
 4. Activate virtual environment: `source env/bin/activate`
 5. Install the requirements: `python3 -m pip install -r requirements.txt`
