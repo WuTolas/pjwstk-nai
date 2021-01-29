@@ -291,7 +291,7 @@ class SmileNeuralNetwork:
         """
         faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-        video_capture = cv2.VideoCapture(2)
+        video_capture = cv2.VideoCapture(0)
         predict = 0
         while True:
             ret, frame = video_capture.read()
