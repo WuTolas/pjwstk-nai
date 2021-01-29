@@ -8,6 +8,7 @@
 https://www.youtube.com/watch?v=roEEZbAwM2Y
 
 camera smile detection:
+https://www.youtube.com/watch?v=K9IWdQVoAx4
 
 ## Environment setup - linux
 
