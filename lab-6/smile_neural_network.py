@@ -307,7 +307,7 @@ class SmileNeuralNetwork:
             )
 
             for (x, y, w, h) in faces:
-                xoffset = 30
+                xoffset = 20
                 yoffset = 10
                 cv2.rectangle(frame, (x+xoffset, y+yoffset), (x+w-xoffset, y+h-yoffset), (0, 255, 0), 2)
                 fragment = frame[y+yoffset+5: y+h-yoffset-5, x+xoffset+5:x+w-xoffset-5]
@@ -318,7 +318,7 @@ class SmileNeuralNetwork:
                 img = img.reshape(-1, 64, 64, 3) / 255
                 predict = self.model.predict(img)
                 print(predict)
-                predict = (predict[0] > 0.6).astype("int32")
+                predict = (predict[0] > 0.5).astype("int32")
 
             font = cv2.FONT_HERSHEY_SIMPLEX
             if predict == 0:
